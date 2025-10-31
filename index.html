@@ -108,7 +108,7 @@
 
       divRef.innerHTML = `<p>Fetching weather for ${city}...</p>`;
 
-      const apiKey = "30e982dc0cc84dbc92c154159253110"; // Replace with your WeatherAPI.com key
+      const apiKey = "30e982dc0cc84dbc92c154159253110";
       const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
 
       axios.get(url)
