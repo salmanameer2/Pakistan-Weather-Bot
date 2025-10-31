@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pakistan Weather Bot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e3a3d, #081213);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #d0dddd;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    form {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input[type="text"] {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #b2ebf2;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #00acc1;
+      outline: none;
+    }
+
+    button {
+      padding: 0.75rem;
+      font-size: 1rem;
+      background-color: #00acc1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #007c91;
+    }
+
+    #answer {
+      margin-top: 1.5rem;
+      background: #f1f8e9;
+      border-left: 4px solid #8bc34a;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 500px;
+      font-size: 1rem;
+      color: #33691e;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🌤️ Pakistan Weather Bot</h1>
+  <form onsubmit="getWeather(); return false;">
+    <input type="text" id="city" placeholder="Enter city name (e.g. Lahore, Karachi)" />
+    <button type="submit">Get Weather</button>
+  </form>
+  <div id="answer" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function getWeather() {
+      const city = document.querySelector("#city").value.trim();
+      const divRef = document.querySelector("#answer");
+
+      if (!city) {
+        divRef.innerHTML = `<p>Please enter a city name.</p>`;
+        return;
+      }
+
+      divRef.innerHTML = `<p>Fetching weather for ${city}...</p>`;
+
+      const apiKey = "30e982dc0cc84dbc92c154159253110"; // Replace with your WeatherAPI.com key
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
+
+      axios.get(url)
+        .then((response) => {
+          const data = response.data;
+          const weather = `
+            <strong>${data.location.name}, ${data.location.region}</strong><br>
+            🌡️ Temperature: ${data.current.temp_c}°C<br>
+            ☁️ Condition: ${data.current.condition.text}<br>
+            💨 Wind: ${data.current.wind_kph} kph<br>
+            🌅 Last Updated: ${data.current.last_updated}
+          `;
+          divRef.innerHTML = `<p>${weather}</p>`;
+        })
+        .catch((error) => {
+          divRef.innerHTML = `<p>Could not fetch weather. Please check the city name.</p>`;
+          console.error(error);
+        });
+    }
+  </script>
+</body>
+</html>
